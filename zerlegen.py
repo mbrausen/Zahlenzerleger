@@ -1,53 +1,77 @@
 import sys
+from rich import print
+from rich.console import Console
+from rich.table import Table
 
-# Zahl abfragen und in Float wandeln, Fehler abfangen, wenn keine Zahl
-try:
-    eingabe = input('\n\n\nZu zerlegende Zahl: ')
-    # Eingabe in Floar wandeln und ggf. Komma ersetzen
-    zahl = float(eingabe.replace(',', '.'))
-except ValueError:
-    print('Keine Zahl eingegeben!')
-    sys.exit(1)
+# Bildschirm initialisieren und löschen
+console = Console()
+console.clear()
 
 # welchen Potenzen von 2 werden abgebildet?
 faktoren = [512, 256, 128, 64, 32, 16, 8, 4, 2, 1]
 
-# was ist die größte Zahl, die mit den Potenzen abgebildet werden kann?
-groesste_zahl = 0
-for i in faktoren:
-    groesste_zahl += i
+abbruch = False
+while  not abbruch:
+    # Zahl abfragen und in Float wandeln, Fehler abfangen, wenn keine Zahl
+    try:
+        print('\n\n\n[yellow]Zu zerlegende Zahl:[/] ', end='')
+        eingabe = input()
+        # Eingabe in Floar wandeln und ggf. Komma ersetzen
+        zahl = float(eingabe.replace(',', '.'))
+    except ValueError:
+        print(f'{eingabe} [bold red]ist keine Zahl![/]')
+        sys.exit(1)
 
-# auf ganze Zahl runden und in Integer wandeln
-zahl = int(round(zahl))
+    # was ist die größte Zahl, die mit den Potenzen abgebildet werden kann?
+    groesste_zahl = 0
+    for i in faktoren:
+        groesste_zahl += i
 
-# ist die Eingabe größer, als das was zerlegt werden kann?
-if abs(zahl) > groesste_zahl:
-    print(f'Die eingegebene Zahl ist größer, als die größte Zahl, die zerlegt werden kann ({groesste_zahl}).\nDas kann nicht richtig sein!')
-    sys.exit(1)
+    # auf ganze Zahl runden und in Integer wandeln
+    zahl = int(round(zahl))
 
-print(f'\nZerlege {zahl}.\n')
+    # ist die Eingabe größer, als das was zerlegt werden kann?
+    if abs(zahl) > groesste_zahl:
+        print(f'Die eingegebene Zahl ist größer, als die größte Zahl, die zerlegt werden kann ({groesste_zahl}).\n[bold red]Das kann nicht richtig sein![/]')
+        sys.exit(1)
 
-# Variable für Ergebnis initialisieren
-resultat = []
+    print(f'\nZerlege {zahl}:\n')
 
-# Vorzeichen verarbeiten
-if zahl < 0:
-    resultat.append('[X]')
-    zahl = abs(zahl)
-else:
-    resultat.append('[ ]')
+    # Variable für Ergebnis initialisieren
+    resultat = []
 
-# zerlegen
-for faktor in faktoren:
-    if zahl // faktor == 1:
-        zahl = zahl - faktor
+    # Tabelle für Ergebnis initialisieren
+    tabelle = Table()
+    tabelle.add_column("(-)", justify="center", style="white", no_wrap=True)
+    for faktor in faktoren:
+        tabelle.add_column(str(faktor), justify="center", style="white", no_wrap=True)
+
+    # Vorzeichen verarbeiten
+    if zahl < 0:
         resultat.append('[X]')
+        zahl = abs(zahl)
     else:
         resultat.append('[ ]')
 
-# Ergebnis ausheben
-print('-'*43)
-print("(-) 512 256 128  64  32  16  8   4   2   1")
-print(' '.join(resultat))
-print('-'*43)
-print('\n\n')
+    # zerlegen
+    for faktor in faktoren:
+
+        if zahl // faktor == 1:
+            zahl = zahl - faktor
+            resultat.append('[X]')
+        else:
+            resultat.append('[ ]')
+
+    # Ergebnis ausheben
+    tabelle.add_row(*resultat, style="bold")
+
+    console.print(tabelle)
+    print('\n\n')
+    print('[lightblue]Weitere Zahl zerlegen? (j/n)[/] ', end='')
+    weiter = input()
+    if weiter.lower() == 'j':
+        abbruch = False
+        console.clear()
+    else:
+        abbruch = True
+        print('\n\n')
