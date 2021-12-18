@@ -11,7 +11,7 @@ console.clear()
 faktoren = [512, 256, 128, 64, 32, 16, 8, 4, 2, 1]
 
 abbruch = False
-while  not abbruch:
+while not abbruch:
     # Zahl abfragen und in Float wandeln, Fehler abfangen, wenn keine Zahl
     try:
         print('\n\n\n[yellow]Zu zerlegende Zahl:[/] ', end='')
