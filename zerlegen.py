@@ -16,7 +16,7 @@ while not abbruch:
     try:
         print('\n\n\n[yellow]Zu zerlegende Zahl:[/] ', end='')
         eingabe = input()
-        # Eingabe in Floar wandeln und ggf. Komma ersetzen
+        # Eingabe in Float wandeln und ggf. Komma ersetzen
         zahl = float(eingabe.replace(',', '.'))
     except ValueError:
         print(f'{eingabe} [bold red]ist keine Zahl![/]')
